@@ -65,7 +65,7 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-    console.log(user);
+    //console.log(user);
     const isMatch = await bcrypt.compare(password, user?.password || "");
 
     if (!user || !isMatch) {
@@ -95,6 +95,16 @@ export const logout = async (req, res) => {
     res.status(200).json({ message: "logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
+    return res.status(400).json({ error: "Server Error" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in getMecl controller", error.message);
     return res.status(400).json({ error: "Server Error" });
   }
 };
